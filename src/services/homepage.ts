@@ -15,16 +15,28 @@ type ReviewWithRelations = Prisma.ReviewGetPayload<{
   };
 }>;
 
-const emptyHomepageData = {
-  heroBanners: [] as any[],
-  featuredProducts: [] as ProductWithRelations[],
-  trendingProducts: [] as ProductWithRelations[],
-  newArrivals: [] as ProductWithRelations[],
-  bestSellers: [] as ProductWithRelations[],
-  categories: [] as any[],
-  brands: [] as any[],
-  reviews: [] as ReviewWithRelations[],
-  homepageSettings: [] as any[],
+interface HomepageData {
+  heroBanners: any[];
+  featuredProducts: ProductWithRelations[];
+  trendingProducts: ProductWithRelations[];
+  newArrivals: ProductWithRelations[];
+  bestSellers: ProductWithRelations[];
+  categories: any[];
+  brands: any[];
+  reviews: ReviewWithRelations[];
+  homepageSettings: any[];
+}
+
+const emptyHomepageData: HomepageData = {
+  heroBanners: [],
+  featuredProducts: [],
+  trendingProducts: [],
+  newArrivals: [],
+  bestSellers: [],
+  categories: [],
+  brands: [],
+  reviews: [],
+  homepageSettings: [],
 };
 
 export async function getHomepageData() {
