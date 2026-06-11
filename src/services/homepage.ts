@@ -1,7 +1,6 @@
 import prisma from "@/lib/db";
 import { Prisma } from "@prisma/client";
 
-// Define the exact product structure with its related tables included
 type ProductWithRelations = Prisma.ProductGetPayload<{
   include: {
     brand: { select: { name: true } };
@@ -9,21 +8,23 @@ type ProductWithRelations = Prisma.ProductGetPayload<{
   };
 }>;
 
+type ReviewWithRelations = Prisma.ReviewGetPayload<{
+  include: {
+    customer: { select: { firstName: true; lastName: true } };
+    product: { select: { name: true; slug: true } };
+  };
+}>;
+
 const emptyHomepageData = {
-  heroBanners: [] as Awaited<ReturnType<typeof prisma.heroBanner.findMany>>,
+  heroBanners: [] as any[],
   featuredProducts: [] as ProductWithRelations[],
   trendingProducts: [] as ProductWithRelations[],
   newArrivals: [] as ProductWithRelations[],
   bestSellers: [] as ProductWithRelations[],
-  categories: [] as Awaited<ReturnType<typeof prisma.category.findMany>>,
-  brands: [] as Awaited<ReturnType<typeof prisma.brand.findMany>>,
-  reviews: [] as Prisma.ReviewGetPayload<{
-    include: {
-      customer: { select: { firstName: true; lastName: true } };
-      product: { select: { name: true; slug: true } };
-    };
-  }>[],
-  homepageSettings: [] as Awaited<ReturnType<typeof prisma.homepageSetting.findMany>>,
+  categories: [] as any[],
+  brands: [] as any[],
+  reviews: [] as ReviewWithRelations[],
+  homepageSettings: [] as any[],
 };
 
 export async function getHomepageData() {
