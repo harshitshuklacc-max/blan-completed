@@ -1,14 +1,28 @@
 import prisma from "@/lib/db";
+import { Prisma } from "@prisma/client";
+
+// Define the exact product structure with its related tables included
+type ProductWithRelations = Prisma.ProductGetPayload<{
+  include: {
+    brand: { select: { name: true } };
+    images: { where: { isPrimary: true }; take: 1 };
+  };
+}>;
 
 const emptyHomepageData = {
   heroBanners: [] as Awaited<ReturnType<typeof prisma.heroBanner.findMany>>,
-  featuredProducts: [] as Awaited<ReturnType<typeof prisma.product.findMany>>,
-  trendingProducts: [] as Awaited<ReturnType<typeof prisma.product.findMany>>,
-  newArrivals: [] as Awaited<ReturnType<typeof prisma.product.findMany>>,
-  bestSellers: [] as Awaited<ReturnType<typeof prisma.product.findMany>>,
+  featuredProducts: [] as ProductWithRelations[],
+  trendingProducts: [] as ProductWithRelations[],
+  newArrivals: [] as ProductWithRelations[],
+  bestSellers: [] as ProductWithRelations[],
   categories: [] as Awaited<ReturnType<typeof prisma.category.findMany>>,
   brands: [] as Awaited<ReturnType<typeof prisma.brand.findMany>>,
-  reviews: [] as Awaited<ReturnType<typeof prisma.review.findMany>>,
+  reviews: [] as Prisma.ReviewGetPayload<{
+    include: {
+      customer: { select: { firstName: true; lastName: true } };
+      product: { select: { name: true; slug: true } };
+    };
+  }>[],
   homepageSettings: [] as Awaited<ReturnType<typeof prisma.homepageSetting.findMany>>,
 };
 
@@ -76,8 +90,8 @@ export async function getHomepageData() {
       prisma.review.findMany({
         where: { status: "APPROVED" },
         include: {
-          customer: { select: { firstName: true, lastName: true } },
-          product: { select: { name: true, slug: true } },
+          customer: { select: { firstName: true; lastName: true } },
+          product: { select: { name: true; slug: true } },
         },
         orderBy: { createdAt: "desc" },
         take: 6,
